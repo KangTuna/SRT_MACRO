@@ -1,7 +1,6 @@
 # edit date : 2024-04-26
 # version : 1.9.0
 
-from random import randint
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
@@ -10,15 +9,24 @@ from modules.selenium import *
 import time
 import webbrowser
 
-chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
+import pygame
+
+# pygame 초기화
+pygame.mixer.init()
+
+# MP3 파일을 로드
+pygame.mixer.music.load("빰빠라밤.mp3")
 
 ############# 자동 예매 원하는 설정으로 변경 ##############
+with open('./PersonalData/ID.txt', 'r') as f:
+    member_number = f.read()
 
-member_number = "0000000000" # 회원번호
-password= "password" # 비밀번호
+with open('./PersonalData/PW.txt', 'r') as f:
+    password = f.read()
+
 arrival = "동대구" # 출발지
 departure = "수서" # 도착지
-standard_date = "20240506" # 기준날짜 ex) 20221101
+standard_date = "20250213" # 기준날짜 ex) 20221101
 standard_time = "12" # 기준 시간 ex) 00 - 22 // 2의 배수로 입력
 
 """
@@ -107,7 +115,13 @@ while True:
                 if driver.find_elements(By.ID, 'isFalseGotoMain'):
                     reserved = True
                     print('예약 성공')
-                    webbrowser.get(chrome_path).open("https://etk.srail.kr/hpg/hra/02/selectReservationList.do?pageId=TK0102010000")
+
+                    # 예약성공 사운드 출력
+                    pygame.mixer.music.play()
+
+                    # 재생이 끝날 때까지 기다림
+                    while pygame.mixer.music.get_busy():
+                        pygame.time.Clock().tick(10)
                     break
 
                 else:
@@ -128,7 +142,6 @@ while True:
                         if driver.find_elements(By.ID, 'isFalseGotoMain'):
                             reserved = True
                             print('예약 성공')
-                            webbrowser.get(chrome_path).open("https://etk.srail.kr/hpg/hra/02/selectReservationList.do?pageId=TK0102010000")
                             break
 
                         else:
